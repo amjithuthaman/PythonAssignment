@@ -99,26 +99,26 @@ def delete_user(user_id):
     return "", 204
 
 @blueprint.route("/password-change/", methods=["POST"])
+@login_required
 def password_change():
+    user_id = g.user["id"]
     data = request.json
-    email = data.get("email")
     current_password = data.get("current_password")
     new_password = data.get("new_password")
-    if not all([current_password, new_password, email]):
+    if not all([current_password, new_password, user_id]):
         return {"error": "Required fields are missing"}, 400
     
     hashed_new_password = generate_password_hash(new_password)
     db = get_db()
-    cursor = db.execute("SELECT * FROM user where email=?", (email,))
+    cursor = db.execute("SELECT * FROM user where id=?", (user_id,))
     user = cursor.fetchone()
 
     if user is None:
-        return {"error": "Incorrect email"}, 401
+        return {"error": "No user found"}, 401
     
     if not check_password_hash(user["password"], current_password):
         return {"error": "Incorrect password"}, 401
 
-    user_id = user["id"]
     try:
         db.execute(
             "UPDATE user SET password=? WHERE id=?",
