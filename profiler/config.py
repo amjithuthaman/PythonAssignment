@@ -1,1 +1,1 @@
-SECRET_KEY = "change-this-please"
+SECRET_KEY = "amj-key"
