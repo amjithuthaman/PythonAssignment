@@ -128,7 +128,7 @@ def password_change():
     except db.IntegrityError:
         return {"error": "This email is already registered"}, 400
     
-    return jsonify({"id": user_id, "email": email, "message":"Password changed successfully" }), 200
+    return jsonify({"id": user_id, "email": g.user["email"], "message":"Password changed successfully" }), 200
 
 
 
